@@ -10,9 +10,9 @@ using RestAPI_WSB.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Konfiguracja połączenia z bazą danych
+// Konfiguracja połączenia z bazą danych (SQLite)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Konfiguracja Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
