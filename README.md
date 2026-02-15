@@ -25,13 +25,12 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
 - JWT Authentication
 - SQLite
 
-## Instalacja
+## Instalacja i Uruchomienie
 
 ### Wymagania
 - .NET 8 SDK
-- Entity Framework Core Tools: `dotnet tool install --global dotnet-ef`
 
-### Kroki instalacji
+### Kroki
 
 1. **Sklonuj repozytorium:**
    ```bash
@@ -39,7 +38,7 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
    cd RestAPI_WSB/RestAPI_WSB
    ```
 
-2. **Wygeneruj bezpieczny klucz JWT** (minimum 32 znaki) i zamień wartość `Jwt:Key` w `appsettings.json`:
+2. **Wygeneruj bezpieczny klucz JWT** (minimum 32 znaki) i zamień wartość `Jwt:Key` w pliku `appsettings.json`:
    
    **Linux/macOS:**
    ```bash
@@ -50,18 +49,15 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
    ```powershell
    -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 64 | ForEach-Object {[char]$_})
    ```
+   
+   Skopiuj wygenerowany klucz i wklej do `appsettings.json` jako wartość `Jwt:Key`.
 
-3. **Utwórz inicjalną migrację** (tylko raz, przy pierwszym uruchomieniu):
-   ```bash
-   dotnet ef migrations add InitialCreate
-   ```
-
-4. **Uruchom aplikację:**
+3. **Uruchom aplikację:**
    ```bash
    dotnet run
    ```
    
-   ⚠️ **Baza danych zostanie automatycznie utworzona przy pierwszym uruchomieniu!**
+   ✅ **To wszystko!** Baza danych i wszystkie tabele zostaną automatycznie utworzone przy pierwszym uruchomieniu.
 
 ## Endpointy API
 
@@ -89,13 +85,18 @@ Dokumentacja API dostępna pod adresem: `http://localhost:5000/` lub `http://loc
 
 ## Baza Danych
 
-Projekt używa **SQLite** jako bazy danych. Plik bazy danych (`RestAPI_WSB.db`) jest tworzony **automatycznie przy pierwszym uruchomieniu aplikacji** i znajduje się w katalogu projektu `RestAPI_WSB/`.
+Projekt używa **SQLite** jako bazy danych. 
 
-### Automatyczne Migracje
+### Automatyczne Tworzenie Bazy
 
-Aplikacja automatycznie:
-- Tworzy bazę danych przy pierwszym uruchomieniu
-- Aplikuje wszystkie oczekujące migracje
-- Loguje proces migracji w konsoli
+Przy pierwszym uruchomieniu aplikacji (`dotnet run`):
+- Automatycznie tworzy plik bazy danych `RestAPI_WSB.db` w katalogu projektu
+- Tworzy wszystkie niezbędne tabele (Users, Roles, Projekty, Zadania)
+- Konfiguruje relacje między tabelami
 
-Nie musisz ręcznie uruchamiać `dotnet ef database update` - wszystko dzieje się automatycznie!
+**Nie musisz:**
+- Instalować `dotnet-ef` tools
+- Tworzyć migracji ręcznie
+- Uruchamiać `dotnet ef database update`
+
+Wszystko dzieje się automatycznie! Po prostu uruchom `dotnet run` i zacznij używać API.
