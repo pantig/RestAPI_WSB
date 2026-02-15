@@ -27,42 +27,41 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
 
 ## Instalacja
 
-1. Sklonuj repozytorium:
+### Wymagania
+- .NET 8 SDK
+- Entity Framework Core Tools: `dotnet tool install --global dotnet-ef`
+
+### Kroki instalacji
+
+1. **Sklonuj repozytorium:**
    ```bash
    git clone https://github.com/pantig/RestAPI_WSB.git
-   cd RestAPI_WSB
+   cd RestAPI_WSB/RestAPI_WSB
    ```
 
-2. Wygeneruj bezpieczny klucz JWT (minimum 32 znaki) i zamień wartość `Jwt:Key` w `appsettings.json`:
+2. **Wygeneruj bezpieczny klucz JWT** (minimum 32 znaki) i zamień wartość `Jwt:Key` w `appsettings.json`:
+   
+   **Linux/macOS:**
+   ```bash
+   openssl rand -base64 48
+   ```
+   
+   **Windows PowerShell:**
    ```powershell
-   # W PowerShell:
    -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 64 | ForEach-Object {[char]$_})
    ```
 
-3. Przejdź do katalogu projektu:
-   ```bash
-   cd RestAPI_WSB
-   ```
-
-4. Przywróć pakiety NuGet:
-   ```bash
-   dotnet restore
-   ```
-
-5. Utwórz migracje bazy danych:
+3. **Utwórz inicjalną migrację** (tylko raz, przy pierwszym uruchomieniu):
    ```bash
    dotnet ef migrations add InitialCreate
    ```
 
-6. Zaktualizuj bazę danych (utworzy plik `RestAPI_WSB.db`):
-   ```bash
-   dotnet ef database update
-   ```
-
-7. Uruchom aplikację:
+4. **Uruchom aplikację:**
    ```bash
    dotnet run
    ```
+   
+   ⚠️ **Baza danych zostanie automatycznie utworzona przy pierwszym uruchomieniu!**
 
 ## Endpointy API
 
@@ -86,8 +85,17 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
 
 ## Swagger
 
-Dokumentacja API dostępna pod adresem: `http://localhost:5000/swagger` (lub inny port wskazany podczas uruchomienia)
+Dokumentacja API dostępna pod adresem: `http://localhost:5000/` lub `http://localhost:5000/swagger`
 
 ## Baza Danych
 
-Projekt używa SQLite jako bazy danych. Plik bazy danych (`RestAPI_WSB.db`) jest tworzony automatycznie po uruchomieniu migracji i znajduje się w katalogu projektu `RestAPI_WSB/`.
+Projekt używa **SQLite** jako bazy danych. Plik bazy danych (`RestAPI_WSB.db`) jest tworzony **automatycznie przy pierwszym uruchomieniu aplikacji** i znajduje się w katalogu projektu `RestAPI_WSB/`.
+
+### Automatyczne Migracje
+
+Aplikacja automatycznie:
+- Tworzy bazę danych przy pierwszym uruchomieniu
+- Aplikuje wszystkie oczekujące migracje
+- Loguje proces migracji w konsoli
+
+Nie musisz ręcznie uruchamiać `dotnet ef database update` - wszystko dzieje się automatycznie!
