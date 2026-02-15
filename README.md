@@ -79,9 +79,91 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
 - `PUT /api/zadania/{id}` - Zaktualizuj zadanie
 - `DELETE /api/zadania/{id}` - Usuń zadanie
 
+## Testowanie API z curl
+
+### 1. Rejestracja nowego użytkownika
+```bash
+curl -X POST http://localhost:5000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "Test123!",
+    "userName": "testuser"
+  }'
+```
+
+### 2. Logowanie i otrzymanie tokenu JWT
+```bash
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "Test123!"
+  }'
+```
+
+Odpowiedź zawiera token JWT - skopiuj wartość pola `token`.
+
+### 3. Utworzenie nowego projektu (wymaga tokenu)
+```bash
+curl -X POST http://localhost:5000/api/projekty \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TWOJ_TOKEN_JWT" \
+  -d '{
+    "nazwa": "Mój Pierwszy Projekt",
+    "opis": "Opis projektu"
+  }'
+```
+
+### 4. Pobranie wszystkich projektów użytkownika
+```bash
+curl -X GET http://localhost:5000/api/projekty \
+  -H "Authorization: Bearer TWOJ_TOKEN_JWT"
+```
+
+### 5. Utworzenie zadania w projekcie
+```bash
+curl -X POST http://localhost:5000/api/zadania \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TWOJ_TOKEN_JWT" \
+  -d '{
+    "tytul": "Moje pierwsze zadanie",
+    "opis": "Opis zadania",
+    "status": "Do zrobienia",
+    "projektId": 1
+  }'
+```
+
+### 6. Pobranie wszystkich zadań użytkownika
+```bash
+curl -X GET http://localhost:5000/api/zadania \
+  -H "Authorization: Bearer TWOJ_TOKEN_JWT"
+```
+
+### 7. Aktualizacja projektu
+```bash
+curl -X PUT http://localhost:5000/api/projekty/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TWOJ_TOKEN_JWT" \
+  -d '{
+    "nazwa": "Zaktualizowana nazwa",
+    "opis": "Nowy opis projektu"
+  }'
+```
+
+### 8. Usunięcie zadania
+```bash
+curl -X DELETE http://localhost:5000/api/zadania/1 \
+  -H "Authorization: Bearer TWOJ_TOKEN_JWT"
+```
+
+**Uwaga:** Zastąp `TWOJ_TOKEN_JWT` tokenem otrzymanym po zalogowaniu.
+
 ## Swagger
 
 Dokumentacja API dostępna pod adresem: `http://localhost:5000/` lub `http://localhost:5000/swagger`
+
+Swagger UI umożliwia interaktywne testowanie wszystkich endpointów bez używania curl.
 
 ## Baza Danych
 
