@@ -57,8 +57,6 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujace EntityFramework i Micro
    dotnet run
    ```
    
-   Baza danych i wszystkie tabele zostana automatycznie utworzone przy pierwszym uruchomieniu.
-
 ## Endpointy API
 
 ### Autoryzacja
@@ -161,24 +159,10 @@ Uwaga: Zastap TWOJ_TOKEN_JWT tokenem otrzymanym po zalogowaniu.
 
 ## Swagger
 
-Dokumentacja API dostepna pod adresem: http://localhost:5000/ lub http://localhost:5000/swagger
+Dokumentacja API dostepna pod adresem: http://localhost:5000/
 
 Swagger UI umozliwia interaktywne testowanie wszystkich endpointow bez uzywania curl.
 
 ## Baza Danych
 
 Projekt uzywa SQLite jako bazy danych. 
-
-### Automatyczne Tworzenie Bazy
-
-Przy pierwszym uruchomieniu aplikacji (dotnet run):
-- Automatycznie tworzy plik bazy danych RestAPI_WSB.db w katalogu projektu
-- Tworzy wszystkie niezbedne tabele (Users, Roles, Projekty, Zadania)
-- Konfiguruje relacje miedzy tabelami
-
-Nie musisz:
-- Instalowac dotnet-ef tools
-- Tworzyc migracji recznie
-- Uruchamiac dotnet ef database update
-
-Wszystko dzieje sie automatycznie. Po prostu uruchom dotnet run i zacznij uzywac API.
