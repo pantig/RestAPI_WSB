@@ -23,18 +23,43 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
 - Entity Framework Core
 - Microsoft Identity
 - JWT Authentication
-- SQL Server (LocalDB)
+- SQLite
 
 ## Instalacja
 
-1. Sklonuj repozytorium
-2. Zaktualizuj connection string w `appsettings.json`
-3. Wygeneruj bezpieczny klucz JWT i zamień wartość `Jwt:Key` w `appsettings.json`
-4. Uruchom migracje:
+1. Sklonuj repozytorium:
+   ```bash
+   git clone https://github.com/pantig/RestAPI_WSB.git
+   cd RestAPI_WSB
+   ```
+
+2. Wygeneruj bezpieczny klucz JWT (minimum 32 znaki) i zamień wartość `Jwt:Key` w `appsettings.json`:
+   ```powershell
+   # W PowerShell:
+   -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 64 | ForEach-Object {[char]$_})
+   ```
+
+3. Przejdź do katalogu projektu:
+   ```bash
+   cd RestAPI_WSB
+   ```
+
+4. Przywróć pakiety NuGet:
+   ```bash
+   dotnet restore
+   ```
+
+5. Utwórz migracje bazy danych:
+   ```bash
+   dotnet ef migrations add InitialCreate
+   ```
+
+6. Zaktualizuj bazę danych (utworzy plik `RestAPI_WSB.db`):
    ```bash
    dotnet ef database update
    ```
-5. Uruchom aplikację:
+
+7. Uruchom aplikację:
    ```bash
    dotnet run
    ```
@@ -61,4 +86,8 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
 
 ## Swagger
 
-Dokumentacja API dostępna pod adresem: `http://localhost:5000/swagger`
+Dokumentacja API dostępna pod adresem: `http://localhost:5000/swagger` (lub inny port wskazany podczas uruchomienia)
+
+## Baza Danych
+
+Projekt używa SQLite jako bazy danych. Plik bazy danych (`RestAPI_WSB.db`) jest tworzony automatycznie po uruchomieniu migracji i znajduje się w katalogu projektu `RestAPI_WSB/`.
