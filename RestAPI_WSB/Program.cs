@@ -10,29 +10,29 @@ using RestAPI_WSB.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Konfiguracja połączenia z bazą danych (SQLite)
+// Konfiguracja bazy danych SQLite
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Konfiguracja Identity
+// Konfiguracja Microsoft Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    // Konfiguracja wymagań hasła
+    // Wymagania dla hasla
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
     
-    // Konfiguracja użytkownika
+    // Wymagania dla uzytkownika
     options.User.RequireUniqueEmail = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Konfiguracja JWT Authentication
+// Konfiguracja JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not configured"));
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("Brak konfiguracji klucza JWT"));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -56,12 +56,12 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// Rejestracja serwisów
+// Rejestracja serwisow
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddControllers();
 
-// Konfiguracja Swagger z obsługą JWT
+// Konfiguracja Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -72,7 +72,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "REST API z .NET 8, Entity Framework i Microsoft Identity"
     });
 
-    // Dodanie definicji bezpieczeństwa JWT
+    // Definicja bezpieczenstwa JWT dla Swaggera
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -80,7 +80,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Wprowadź token JWT w formacie: Bearer {twój_token}"
+        Description = "Podaj token JWT w formacie: Bearer {token}"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -99,7 +99,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Konfiguracja CORS (opcjonalnie, dla frontendów)
+// Konfiguracja CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -112,7 +112,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Automatyczne utworzenie bazy danych i struktur tabel przy starcie aplikacji
+// Automatyczne utworzenie bazy danych przy starcie
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -121,33 +121,32 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<ApplicationDbContext>();
         var logger = services.GetRequiredService<ILogger<Program>>();
         
-        logger.LogInformation("Checking database...");
+        logger.LogInformation("Sprawdzanie bazy danych...");
         
-        // EnsureCreated tworzy bazę i wszystkie tabele jeśli nie istnieją
-        // Działa bez potrzeby tworzenia migracji
+        // Tworzy baze danych i tabele jesli nie istnieja
         if (context.Database.EnsureCreated())
         {
-            logger.LogInformation("Database created successfully with all tables.");
+            logger.LogInformation("Baza danych zostala utworzona pomyslnie.");
         }
         else
         {
-            logger.LogInformation("Database already exists.");
+            logger.LogInformation("Baza danych juz istnieje.");
         }
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while creating the database.");
+        logger.LogError(ex, "Wystapil blad podczas tworzenia bazy danych.");
         throw;
     }
 }
 
-// Swagger dostępny w każdym środowisku (Development i Production)
+// Konfiguracja pipeline
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "RestAPI_WSB v1");
-    options.RoutePrefix = string.Empty; // Swagger na root URL
+    options.RoutePrefix = string.Empty;
 });
 
 app.UseHttpsRedirection();

@@ -1,20 +1,20 @@
 # RestAPI_WSB
 
-REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Microsoft Identity.
+REST API oparte na .NET 8 z ASP.NET Core, wykorzystujace EntityFramework i Microsoft Identity.
 
-## Funkcjonalności
+## Funkcjonalnosci
 
-- Uwierzytelnianie i autoryzacja użytkowników z wykorzystaniem tokenów JWT
+- Uwierzytelnianie i autoryzacja uzytkownikow z wykorzystaniem tokenow JWT
 - Modele danych: User (Microsoft Identity), Projekt, Zadanie
 - Relacje:
-  - Jeden użytkownik może posiadać wiele projektów
-  - Projekt może mieć wiele zadań
-  - Zadanie może być przypisane do jednego użytkownika
-- Endpointy CRUD dla Projektów i Zadań
-- Zabezpieczenie dostępu tokenem JWT
-- Użytkownik ma dostęp do:
-  - Projektów, których jest właścicielem
-  - Projektów, w których ma przypisane zadania
+  - Jeden uzytkownik moze posiadac wiele projektow
+  - Projekt moze miec wiele zadan
+  - Zadanie moze byc przypisane do jednego uzytkownika
+- Endpointy CRUD dla Projektow i Zadan
+- Zabezpieczenie dostepu tokenem JWT
+- Uzytkownik ma dostep do:
+  - Projektow, ktorych jest wlascicielem
+  - Projektow, w ktorych ma przypisane zadania
 
 ## Technologie
 
@@ -32,54 +32,56 @@ REST API oparte na .NET 8 z ASP.NET Core, wykorzystujące EntityFramework i Micr
 
 ### Kroki
 
-1. **Sklonuj repozytorium:**
+1. Sklonuj repozytorium:
    ```bash
    git clone https://github.com/pantig/RestAPI_WSB.git
    cd RestAPI_WSB/RestAPI_WSB
    ```
 
-2. **Wygeneruj bezpieczny klucz JWT** (minimum 32 znaki) i zamień wartość `Jwt:Key` w pliku `appsettings.json`:
+2. Wygeneruj bezpieczny klucz JWT (minimum 32 znaki) i zamien wartosc Jwt:Key w pliku appsettings.json:
    
-   **Linux/macOS:**
+   Linux/macOS:
    ```bash
    openssl rand -base64 48
    ```
    
-   **Windows PowerShell:**
+   Windows PowerShell:
    ```powershell
    -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 64 | ForEach-Object {[char]$_})
    ```
    
-   Skopiuj wygenerowany klucz i wklej do `appsettings.json` jako wartość `Jwt:Key`.
+   Skopiuj wygenerowany klucz i wklej do appsettings.json jako wartosc Jwt:Key.
 
-3. **Uruchom aplikację:**
+3. Uruchom aplikacje:
    ```bash
    dotnet run
    ```
    
+   Baza danych i wszystkie tabele zostana automatycznie utworzone przy pierwszym uruchomieniu.
+
 ## Endpointy API
 
 ### Autoryzacja
-- `POST /api/auth/register` - Rejestracja nowego użytkownika
-- `POST /api/auth/login` - Logowanie i otrzymanie tokenu JWT
+- POST /api/auth/register - Rejestracja nowego uzytkownika
+- POST /api/auth/login - Logowanie i otrzymanie tokenu JWT
 
 ### Projekty
-- `GET /api/projekty` - Pobierz wszystkie projekty użytkownika
-- `GET /api/projekty/{id}` - Pobierz szczegóły projektu
-- `POST /api/projekty` - Utwórz nowy projekt
-- `PUT /api/projekty/{id}` - Zaktualizuj projekt
-- `DELETE /api/projekty/{id}` - Usuń projekt
+- GET /api/projekty - Pobierz wszystkie projekty uzytkownika
+- GET /api/projekty/{id} - Pobierz szczegoly projektu
+- POST /api/projekty - Utworz nowy projekt
+- PUT /api/projekty/{id} - Zaktualizuj projekt
+- DELETE /api/projekty/{id} - Usun projekt
 
 ### Zadania
-- `GET /api/zadania` - Pobierz wszystkie zadania użytkownika
-- `GET /api/zadania/{id}` - Pobierz szczegóły zadania
-- `POST /api/zadania` - Utwórz nowe zadanie
-- `PUT /api/zadania/{id}` - Zaktualizuj zadanie
-- `DELETE /api/zadania/{id}` - Usuń zadanie
+- GET /api/zadania - Pobierz wszystkie zadania uzytkownika
+- GET /api/zadania/{id} - Pobierz szczegoly zadania
+- POST /api/zadania - Utworz nowe zadanie
+- PUT /api/zadania/{id} - Zaktualizuj zadanie
+- DELETE /api/zadania/{id} - Usun zadanie
 
 ## Testowanie API z curl
 
-### 1. Rejestracja nowego użytkownika
+### 1. Rejestracja nowego uzytkownika
 ```bash
 curl -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
@@ -100,7 +102,7 @@ curl -X POST http://localhost:5000/api/auth/login \
   }'
 ```
 
-Odpowiedź zawiera token JWT - skopiuj wartość pola `token`.
+Odpowiedz zawiera token JWT - skopiuj wartosc pola token.
 
 ### 3. Utworzenie nowego projektu (wymaga tokenu)
 ```bash
@@ -108,12 +110,12 @@ curl -X POST http://localhost:5000/api/projekty \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer TWOJ_TOKEN_JWT" \
   -d '{
-    "nazwa": "Mój Pierwszy Projekt",
+    "nazwa": "Moj Pierwszy Projekt",
     "opis": "Opis projektu"
   }'
 ```
 
-### 4. Pobranie wszystkich projektów użytkownika
+### 4. Pobranie wszystkich projektow uzytkownika
 ```bash
 curl -X GET http://localhost:5000/api/projekty \
   -H "Authorization: Bearer TWOJ_TOKEN_JWT"
@@ -132,7 +134,7 @@ curl -X POST http://localhost:5000/api/zadania \
   }'
 ```
 
-### 6. Pobranie wszystkich zadań użytkownika
+### 6. Pobranie wszystkich zadan uzytkownika
 ```bash
 curl -X GET http://localhost:5000/api/zadania \
   -H "Authorization: Bearer TWOJ_TOKEN_JWT"
@@ -149,20 +151,34 @@ curl -X PUT http://localhost:5000/api/projekty/1 \
   }'
 ```
 
-### 8. Usunięcie zadania
+### 8. Usuniecie zadania
 ```bash
 curl -X DELETE http://localhost:5000/api/zadania/1 \
   -H "Authorization: Bearer TWOJ_TOKEN_JWT"
 ```
 
-**Uwaga:** Zastąp `TWOJ_TOKEN_JWT` tokenem otrzymanym po zalogowaniu.
+Uwaga: Zastap TWOJ_TOKEN_JWT tokenem otrzymanym po zalogowaniu.
 
 ## Swagger
 
-Dokumentacja API dostępna pod adresem: `http://localhost:5000/`
+Dokumentacja API dostepna pod adresem: http://localhost:5000/ lub http://localhost:5000/swagger
 
-Swagger UI umożliwia interaktywne testowanie wszystkich endpointów bez używania curl.
+Swagger UI umozliwia interaktywne testowanie wszystkich endpointow bez uzywania curl.
 
 ## Baza Danych
 
-Projekt używa **SQLite** jako bazy danych. 
+Projekt uzywa SQLite jako bazy danych. 
+
+### Automatyczne Tworzenie Bazy
+
+Przy pierwszym uruchomieniu aplikacji (dotnet run):
+- Automatycznie tworzy plik bazy danych RestAPI_WSB.db w katalogu projektu
+- Tworzy wszystkie niezbedne tabele (Users, Roles, Projekty, Zadania)
+- Konfiguruje relacje miedzy tabelami
+
+Nie musisz:
+- Instalowac dotnet-ef tools
+- Tworzyc migracji recznie
+- Uruchamiac dotnet ef database update
+
+Wszystko dzieje sie automatycznie. Po prostu uruchom dotnet run i zacznij uzywac API.
