@@ -112,7 +112,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Automatyczne wykonanie migracji bazy danych przy starcie aplikacji
+// Automatyczne utworzenie bazy danych i struktur tabel przy starcie aplikacji
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -121,14 +121,23 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<ApplicationDbContext>();
         var logger = services.GetRequiredService<ILogger<Program>>();
         
-        logger.LogInformation("Applying database migrations...");
-        context.Database.Migrate();
-        logger.LogInformation("Database migrations applied successfully.");
+        logger.LogInformation("Checking database...");
+        
+        // EnsureCreated tworzy bazę i wszystkie tabele jeśli nie istnieją
+        // Działa bez potrzeby tworzenia migracji
+        if (context.Database.EnsureCreated())
+        {
+            logger.LogInformation("Database created successfully with all tables.");
+        }
+        else
+        {
+            logger.LogInformation("Database already exists.");
+        }
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
+        logger.LogError(ex, "An error occurred while creating the database.");
         throw;
     }
 }
