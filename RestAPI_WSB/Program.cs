@@ -142,16 +142,13 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+// Swagger dostępny w każdym środowisku (Development i Production)
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "RestAPI_WSB v1");
-        options.RoutePrefix = string.Empty; // Swagger na root URL
-    });
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "RestAPI_WSB v1");
+    options.RoutePrefix = string.Empty; // Swagger na root URL
+});
 
 app.UseHttpsRedirection();
 
